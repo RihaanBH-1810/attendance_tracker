@@ -1,15 +1,118 @@
 {% extends "base.html" %}
 {%block head%}
-{{super()}}
+    {{super()}}
     <style>
         body {
-            background-color: #19100E;
+            background-color: #000308;
+            max-height: calc(100vh - 10px);
+            overflow-y: hidden;
+        }
+        .navBar {
             padding: 10px;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: none;
+            border-radius: 5px;
+            height: 30px;
+            border: 1px solid #2E333A;
+        }
+        .navBarPages {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 10px;
+        }
+        .selected {
+            background-color: #20252D;
+        }
+        .navBarLinks {
+            text-decoration: none;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            padding: 10px; 
+            display: flex;
+            border-radius: 5px;
+        }
+        .navBarLinks:hover {
+            background-color: #282E36;
+        }
+        .navBarLinksA {
+            text-decoration: none;
+            color: white;
+        }
+        .navBarLogut {
+            text-decoration: none;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            padding: 10px; 
+            display: flex;
+            border-radius: 5px;
+        }
+        .container {
+            width: calc(100vw - 20px);
+            height: calc(100vh - 80px);
+            margin-top: 10px;
+            gap: 10px;
+            overflow-y: scroll;
+        }
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+        th, td {
+            border: 1px solid #2E333A;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #20252D;
         }
     </style>
 {% endblock head %}
 {% block main %}
-    <h2>Home</h2>
-    <script>
-    </script>
+    <div class="navBar">
+        <div class="navBarPages">
+            <a href="/home" class="navBarLinksA">
+                <p class="navBarLinks selected">Home</p>
+            </a>
+            <a href="/dashboard?username={{ user }}" class="navBarLinksA">
+                <p class="navBarLinks">Profile</p>
+            </a>
+        </div>
+        
+        <div class="navBarActions">
+            <a href="/logout" class="navBarLogut">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <h2>Attendance</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Date</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.name }}</td>
+                    <td>{{ record.rollNo }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.login_time }}</td>
+                    <td>{{ record.logout_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

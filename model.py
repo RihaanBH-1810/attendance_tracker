@@ -13,3 +13,6 @@ class User(Base):
     password = Column(Text, nullable=False)
     current_day_labtime = Column(Integer, nullable=False, default=0)
     labtime_data = Column(JSON, nullable=False, default=dict)
+    name = Column(Text, nullable=True)
+    rollNo = Column(Text, nullable=True)
+    mac = Column(Text, nullable=True)
