@@ -47,6 +47,10 @@
             border: 1px solid #A08C87;
             font-size: medium;
         }
+        .btnLogin:hover {
+            background-color: #907e7a;
+            color: white;
+        }
         .loginHref {
             color: #A08C87;
         }
@@ -62,10 +66,46 @@
 <div class="containerLogin">
     <h2>Register</h2>
     <form action="/register" method="POST" class="RegisterForm">
-        <input type="text" name="username" class="form-control" placeholder="Username" required>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
-        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
-        <button type="submit" class="btnLogin">Register</button>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
+        <input type="password" name="password" id="passwordReg" class="form-control" placeholder="Password" required>
+        <input type="password" name="confirm_password" id="confirm_passwordReg" class="form-control" placeholder="Confirm Password" required>
+        <button type="submit" class="btnLogin" id="registerBtn" onclick="regUser()">Register</button>
     </form>
-    <p>Already have an account? <a href="/" class="loginHref">Login</a></p>
+    <p>Already have an account? <a href="/login" class="loginHref">Login</a></p>
+    <script>
+        const pwd = document.getElementById('passwordReg');
+
+        const confirm_pwd = document.getElementById('confirm_passwordReg');
+
+        function checkSamePwd() {
+            if (pwd.value !== confirm_pwd.value) {
+                confirm_pwd.setCustomValidity('Passwords do not match');
+            } else {
+                confirm_pwd.setCustomValidity('');
+            }
+        }
+
+        function regUser() {
+            checkSamePwd();
+            if (confirm_pwd.checkValidity()) {
+                $.ajax({
+                    url: '/register',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        user_name: document.getElementById('username').value,
+                        password: document.getElementById('passwordReg').value,
+                        daily_lab_time: 0,
+                        uptime_data: {}
+                    }),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        console.log(response.message);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+    </script>
 {% endblock %}
