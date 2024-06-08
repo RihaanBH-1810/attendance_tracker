@@ -9,7 +9,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_name = Column(Text)
-    password = Column(Text)
-    current_day_uptime = Column(Integer)
-    uptime_data = Column(JSON)
+    user_name = Column(Text, nullable=False)
+    password = Column(Text, nullable=False)
+    current_day_labtime = Column(Integer, nullable=False, default=0)
+    labtime_data = Column(JSON, nullable=False, default=dict)
