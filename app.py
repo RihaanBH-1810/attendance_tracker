@@ -55,13 +55,13 @@ def register():
             return render_template('register.html', error='Username and password are required')
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        shared_secret = base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8') 
+        shared_secret = base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')
         new_user = User(
             user_name=username,
             password=hashed_password,
             current_day_labtime=0,
-            labtime_data={},
-            shared_secret=shared_secret  
+            labtime_data=json.dumps({}),
+            shared_secret=shared_secret
         )
         session.add(new_user)
         session.commit()
