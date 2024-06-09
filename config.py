@@ -12,4 +12,5 @@ TIMEZONE = os.getenv('TIMEZONE')
 config = {
     'SQL_URI':   f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_URL}:3306/{DB_NAME}',
     'TIMEZONE': TIMEZONE
+
 }

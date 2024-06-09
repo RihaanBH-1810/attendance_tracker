@@ -112,6 +112,25 @@
             justify-content: center;
             align-items: center;
         }
+        .shared-secret-box {
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: fit-content; /* Adjust width to fit content */
+        }
+
+        .shared-secret {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            max-width: 100%; /* Ensure text does not overflow */
+        }
+
     </style>
 {% endblock %}
 {% block main %}
@@ -142,8 +161,10 @@
                 <input type="text" id="name" name="name" value="{{ user.name }}">
                 <h4>Roll Number</h4>
                 <input type="text" id="rollNum" name="rollNum" value="{{ user.rollNo }}">
-                <h4>Shared Secret</h4>
-                <input type="text" id="shared_secret" name="shared_secret" value="{{ user.shared_secret }}" readonly>
+                <h4>Shared Secret:</h4>
+                <div class="shared-secret-box"> 
+                    <div class="shared-secret">{{ user.shared_secret }}</div>
+                </div>
                 <br>
                 <div class="sbmt">
                     <input type="submit" value="Edit">

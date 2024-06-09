@@ -1,10 +1,13 @@
-import json
+import json, os
 from datetime import datetime, timedelta
 from pytz import timezone
 from model import Session, Module, Log, User
 from .generator_script import generatorScript
 
 to_tz = timezone('UTC')  
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(script_dir, 'data')
+futureSSID_path = os.path.join(data_dir, 'futureSSID.json')
 
 def update_futureSSID(futureSSID):
     seed = 1000
@@ -13,7 +16,7 @@ def update_futureSSID(futureSSID):
     while len(futureSSID) < 10000:
         futureSSID.append(generatorScript(seed))
         seed = futureSSID[-1]
-    with open("attendance/futureSSID.json", "w") as file:
+    with open(futureSSID_path, "w") as file:
         json.dump(futureSSID, file)
 
 def refreshSSID(module):
@@ -33,14 +36,14 @@ def refreshSSID(module):
         newSeed = generatorScript(seed)
         module.SSID = 'amFOSS_' + str(newSeed)
         module.seed = newSeed
-        with open("attendance/futureSSID.json", "r") as file:
+        with open(futureSSID_path, "r") as file:
             futureSSID = json.load(file)
         futureSSID = futureSSID[1:]
         update_futureSSID(futureSSID)
         session.commit()
 
 def verify_ssid(ssid_list):
-    with open("attendance/futureSSID.json", "r") as file:
+    with open(futureSSID_path, "r") as file:
         futureSSID = json.load(file)
     
     currentSSID = -1

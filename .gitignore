@@ -1,4 +1,5 @@
 .env
 vnv/
+test/
 __pycache__/
 .venv
