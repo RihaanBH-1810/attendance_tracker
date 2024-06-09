@@ -142,10 +142,8 @@
                 <input type="text" id="name" name="name" value="{{ user.name }}">
                 <h4>Roll Number</h4>
                 <input type="text" id="rollNum" name="rollNum" value="{{ user.rollNo }}">
-                <h4>MAC Address</h4>
-                <input type="text" id="mac" name="mac" value="{{ user.mac }}">
                 <h4>Shared Secret</h4>
-                <input type="text" id="shared_secret" name="shared_secret" value="{{ shared_secret }}" readonly>
+                <input type="text" id="shared_secret" name="shared_secret" value="{{ user.shared_secret }}" readonly>
                 <br>
                 <div class="sbmt">
                     <input type="submit" value="Edit">

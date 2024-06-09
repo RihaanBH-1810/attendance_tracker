@@ -50,9 +50,11 @@ def register():
         data = request.form
         username = data.get('username')
         password = data.get('password')
+        name = data.get('name')
+        rollNo = data.get('rollNo')
 
-        if not username or not password:
-            return render_template('register.html', error='Username and password are required')
+        if not username or not password or not name or not rollNo:
+            return render_template('register.html', error='All fields are required')
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         shared_secret = base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')
@@ -61,10 +63,16 @@ def register():
             password=hashed_password,
             current_day_labtime=0,
             labtime_data=json.dumps({}),
+            name=name,
+            rollNo=rollNo,
             shared_secret=shared_secret
         )
         session.add(new_user)
-        session.commit()
+        try:
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            return render_template('register.html', error='Username already exists')
         return redirect('/login')
     else:
         return render_template('register.html')
