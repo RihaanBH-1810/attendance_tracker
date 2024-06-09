@@ -5,6 +5,7 @@ import dummy_data as dData
 from datetime import datetime, timedelta
 from attendance import ssid_utils, hmac_utils 
 import os, base64
+from sqlalchemy.exc import SQLAlchemyError
 
 
 app = Flask(__name__)
@@ -24,7 +25,10 @@ def home():
 @app.route("/dashboard")
 def dashboard():
     session = Session()
-    current_user = session.query(User).filter_by(user_name=flask_session['username']).first()
+    try:
+        current_user = session.query(User).filter_by(user_name=flask_session['username']).first()
+    except Exception as e:
+        return redirect('/login')
     if 'username' in flask_session:
         return render_template('dashboard.html', username=flask_session['username'], user=current_user)
     return redirect('/login')
@@ -80,7 +84,6 @@ def register():
 
 @app.route("/logout")
 def logout():
-    flask_session.pop('username', None)
     flask_session.clear()
     return redirect('/login')
 

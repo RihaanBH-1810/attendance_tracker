@@ -7,6 +7,12 @@
             max-height: calc(100vh - 10px);
             overflow-y: hidden;
         }
+        .barLogo {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            width: 156px;
+        }
         .navBar {
             padding: 10px;
             padding-top: 10px;
@@ -14,15 +20,16 @@
             justify-content: space-between;
             align-items: center;
             background-color: none;
-            border-radius: 5px;
             height: 30px;
+            border-radius: 5px;
             border: 1px solid #2E333A;
         }
         .navBarPages {
             display: flex;
-            justify-content: space-between;
-            align-items: start;
+            justify-content: start;
+            align-items: center;
             gap: 10px;
+            width: 156px;
         }
         .selected {
             background-color: #20252D;
@@ -51,6 +58,9 @@
             padding: 10px; 
             display: flex;
             border-radius: 5px;
+            justify-content: end;
+            align-items: center;
+            width: 156px;
         }
         .container {
             width: calc(100vw - 20px);
@@ -84,6 +94,10 @@
             <a href="/dashboard?username={{ user }}" class="navBarLinksA">
                 <p class="navBarLinks">Profile</p>
             </a>
+        </div>
+        
+        <div class="barLogo">
+            <img class="loginImg" src="https://amfoss.in/branding/HORIZONTAL-TEXT-BULB-WHITE.svg" alt="Lab Trac Logo" height="40px">
         </div>
         
         <div class="navBarActions">

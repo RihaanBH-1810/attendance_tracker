@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, Boolean, TIMESTAMP, Text, JSON, DateTime, Interval, ForeignKey, Table
+from sqlalchemy import create_engine, Column, Integer, Boolean, TIMESTAMP, Text, JSON, DateTime, Interval, ForeignKey, Table, String
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from config import config
 
@@ -16,7 +16,7 @@ log_modules = Table(
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_name = Column(Text, nullable=False, unique=True)
+    user_name = Column(String(255), nullable=False, unique=True)
     password = Column(Text, nullable=False)
     current_day_labtime = Column(Integer, nullable=False, default=0)
     labtime_data = Column(JSON, nullable=False, default=dict)
