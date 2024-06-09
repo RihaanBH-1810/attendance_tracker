@@ -1,8 +1,11 @@
 from flask import Flask, render_template, jsonify, request, redirect, session as flask_session
 from model import Session, User
-import bcrypt
+import bcrypt, json
 import dummy_data as dData
-from attendance import generateSSID, verify_ssid
+from datetime import datetime, timedelta
+from attendance import ssid_utils, hmac_utils 
+import os. base64
+
 
 app = Flask(__name__)
 app.secret_key = "b'6y[^\xb2*|\xf2\xccd\x9d\x04'" # Remove this later
@@ -52,13 +55,13 @@ def register():
         return render_template('register.html', error='Username and password are required')
 
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    shared_secret = base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')  # Generate a random shared secret
+    shared_secret = base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8') 
     new_user = User(
         user_name=username,
         password=hashed_password,
         current_day_labtime=0,
         labtime_data={},
-        shared_secret=shared_secret  # Store the shared secret
+        shared_secret=shared_secret  
     )
     session.add(new_user)
     session.commit()
@@ -85,7 +88,7 @@ def edit_profile():
         data = request.form
         new_name = data.get('name')
         new_roll_no = data.get('rollNum')
-        new_mac_address = data.get('mac')
+        
         
         if new_name:
             current_user.name = new_name
@@ -93,8 +96,7 @@ def edit_profile():
         if new_roll_no:
             current_user.rollNo = new_roll_no
         
-        if new_mac_address:
-            current_user.mac = new_mac_address
+        
 
         try:
             session.commit()
@@ -112,10 +114,9 @@ def mark_attendance():
     username = data.get('username')
     password = data.get('password')
     ssid_list = data.get('list')
+    message = data.get('message')  
+    received_hmac = data.get('hmac') 
     now = datetime.now()
-    # hmac_shared_key = 
-    # hmac_message =  data.get('hmac_message')
-    # hmac_verfied =  False 
     authenticated = False 
     ssid_verified = False 
 
@@ -124,12 +125,36 @@ def mark_attendance():
         user = session.query(User).filter_by(user_name=username).first()
         if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             authenticated = True
-        ssid_verified = verify_ssid(ssid_list)
-        if authenticated and ssid_verified:
-            #update attendance here 
-            pass
+        ssid_verified = ssid_utils.verify_ssid(ssid_list)
+        if authenticated and ssid_verified and verify_hmac(user.shared_secret, message, received_hmac):
+            now = datetime.now().astimezone(to_tz)
 
-        
+            log = session.query(Log).filter(Log.member_id == user.id, Log.date == now.date()).first()
+            if not log:
+                log = Log(member_id=user.id, date=now, lastSeen=now, duration=timedelta(minutes=0), sessions=[])
+                session.add(log)
+                user.current_day_labtime = 0
+                user.labtime_data[str(now.date())] = []
+                session.commit()
+
+            time_change = now - log.lastSeen
+            log.duration += time_change
+            user.current_day_labtime += time_change.total_seconds()
+            log.lastSeen = now
+
+            sessions = user.labtime_data[str(now.date())]
+            sessions.append({'startTime': log.lastSeen.isoformat(), 'endTime': now.isoformat()})
+            user.labtime_data[str(now.date())] = sessions
+
+            session.commit()
+            return jsonify({"status": "success"}), 200
+        else:
+            return jsonify({"status": "error"}), 401
+    except Exception as e:
+        session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        session.close()     
 
 
 

@@ -1,6 +1,8 @@
+<!-- edit_profile.html -->
+
 {% extends "base.html" %}
-{%block head%}
-    {{super()}}
+{% block head %}
+    {{ super() }}
     <style>
         body {
             background-color: #000308;
@@ -111,7 +113,7 @@
             align-items: center;
         }
     </style>
-{% endblock head %}
+{% endblock %}
 {% block main %}
     <div class="navBar">
         <div class="navBarPages">
@@ -130,20 +132,22 @@
         <div class="detailsBox">
             <img class="imgProfile" src="https://cataas.com/cat?height=256&width=256" alt="Avatar" class="avatar">
             <div class="details">
-                <h2>{{username}}</h2>
+                <h2>{{ username }}</h2>
             </div>
         </div>
         <div class="editDetailsBox">
             <h2>Edit Profile</h2>
             <form action="/editProfile" method="POST" style="width: 320px;">
                 <h4>Name</h4>
-                <input type="text" id="name" name="name" value="{{user.name}}">
+                <input type="text" id="name" name="name" value="{{ user.name }}">
                 <h4>Roll Number</h4>
-                <input type="text" id="rollNum" name="rollNum" value="{{user.rollNo}}">
+                <input type="text" id="rollNum" name="rollNum" value="{{ user.rollNo }}">
                 <h4>MAC Address</h4>
-                <input type="text" id="mac" name="mac" value="{{user.mac}}">
+                <input type="text" id="mac" name="mac" value="{{ user.mac }}">
+                <h4>Shared Secret</h4>
+                <input type="text" id="shared_secret" name="shared_secret" value="{{ shared_secret }}" readonly>
                 <br>
-                <div class="sbmt"">
+                <div class="sbmt">
                     <input type="submit" value="Edit">
                 </div>
             </form>
