@@ -2,8 +2,9 @@
 
 import sys
 import json
-
 import requests
+import hmac
+import hashlib
 from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from os.path import expanduser
@@ -61,19 +62,25 @@ def fetch_relevant_ssid(wifi_ssid_list):
     return relevant_ssid_list
 
 
+def generate_hmac(shared_secret, message):
+    hmac_digest = hmac.new(shared_secret.encode('utf-8'), message.encode('utf-8'), hashlib.sha256).hexdigest()
+    return hmac_digest
+
 def mark_attendance(wifi_ssid_list, credentials):
-    data = {'username': credentials['username'], 'password': credentials['password'], 'list': wifi_ssid_list}
-    variables = json.dumps(data)
-    url = 'https://api.amfoss.in/?'
-    mutation = '''
-    mutation logAttendance($username: String!, $password: String!, $list: [String]) {
-        LogAttendance(username: $username, password: $password, list: $list)
-        {
-            id
-        }
+    shared_secret = credentials['shared_secret']
+    message = ','.join(wifi_ssid_list)
+    hmac_message = generate_hmac(shared_secret, message)
+
+    data = {
+        'username': credentials['username'],
+        'password': credentials['password'],
+        'list': wifi_ssid_list,
+        'message': message,
+        'hmac': hmac_message
     }
-    '''
-    r = requests.post(url, json={'query': mutation, 'variables': variables})
+    url = 'http://localhost:5000/mark_attendance'
+    
+    r = requests.post(url, json=data)
     print(r.content)
     return False
 
