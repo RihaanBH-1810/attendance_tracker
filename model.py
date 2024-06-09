@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine, Column, Integer, Boolean, TIMESTAMP, Text, JSON
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, Column, Integer, Boolean, TIMESTAMP, Text, JSON, DateTime, Interval, ForeignKey
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from config import config
 
 engine = create_engine(config['SQL_URI'])

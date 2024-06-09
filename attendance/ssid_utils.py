@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timedelta
 from pytz import timezone
 from model import Session, Module, Log, User
-from generator_script import generatorScript
+from .generator_script import generatorScript
 
 to_tz = timezone('UTC')  
 

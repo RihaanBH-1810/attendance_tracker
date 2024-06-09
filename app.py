@@ -4,7 +4,7 @@ import bcrypt, json
 import dummy_data as dData
 from datetime import datetime, timedelta
 from attendance import ssid_utils, hmac_utils 
-import os. base64
+import os, base64
 
 
 app = Flask(__name__)
