@@ -173,38 +173,33 @@ def mark_attendance():
         ssid_verified = ssid_utils.verify_ssid(ssid_list)
 
         if authenticated and ssid_verified and hmac_utils.verify_hmac(user.shared_secret, message, received_hmac):
-            now = datetime.now(to_tz)  
             log = session.query(Log).filter(Log.member_id == user.id, Log.date == now.date()).first()
 
-            if not log:
-                log = Log(member_id=user.id, date=now, lastSeen=now, duration=0, sessions=[])
-                session.add(log)
-                user.current_day_labtime = 0
+        if not log:
+            log = Log(member_id=user.id, date=now, lastSeen=now, duration=0, sessions=[])
+            session.add(log)
+            user.current_day_labtime = 0
 
-                
-                labtime_data = json.loads(user.labtime_data)
-                labtime_data[str(now.date())] = []
-                user.labtime_data = json.dumps(labtime_data)
+            labtime_data = json.loads(user.labtime_data)
+            labtime_data[str(now.date())] = []
+            user.labtime_data = json.dumps(labtime_data)
 
-                session.commit()
+            session.commit()
 
-            
-            if log.lastSeen.tzinfo is None:
-                log.lastSeen = to_tz.localize(log.lastSeen)
-
+        if log.lastSeen.tzinfo is None:
+            log.lastSeen = to_tz.localize(log.lastSeen)
             time_change = now - log.lastSeen
             log.duration += time_change.total_seconds()
             user.current_day_labtime += time_change.total_seconds()
             log.lastSeen = now
-
             labtime_data = json.loads(user.labtime_data)
             sessions = labtime_data[str(now.date())]
-            sessions.append({'startTime': log.lastSeen.isoformat(), 'endTime': now.isoformat()})
+            sessions.append({'startTime': (now - time_change).isoformat(), 'endTime': now.isoformat()})
             labtime_data[str(now.date())] = sessions
             user.labtime_data = json.dumps(labtime_data)
-
             session.commit()
             return jsonify({"status": "success"}), 200
+
         else:
             return jsonify({"status": "error"}), 401
     except Exception as e:
