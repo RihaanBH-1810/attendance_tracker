@@ -8,7 +8,7 @@ import os. base64
 
 
 app = Flask(__name__)
-app.secret_key = "b'6y[^\xb2*|\xf2\xccd\x9d\x04'" # Remove this later
+app.secret_key = "b'6y[^\xb2*|\xf2\xccd\x9d\x04'" 
 
 @app.route("/")
 def index():
@@ -100,13 +100,13 @@ def edit_profile():
 
         try:
             session.commit()
-        except Exception as e:
+        except SQLAlchemyError as e:
             session.rollback()
             return render_template('dashboard.html', user=current_user, error=str(e))
-        
+
         return redirect('/home')
 
-    return render_template('edit_profile.html', user=current_user)
+    return render_template('dashboard.html', user=current_user)
 
 @app.route("/mark_attendance", methods=["POST"])
 def mark_attendance():

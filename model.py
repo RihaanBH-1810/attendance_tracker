@@ -15,7 +15,7 @@ class User(Base):
     labtime_data = Column(JSON, nullable=False, default=dict)
     name = Column(Text, nullable=True)
     rollNo = Column(Text, nullable=True)
-    shared_secret = Column(Text, nullable=True)  # Add this field
+    shared_secret = Column(Text, nullable=True)
 
 class Module(Base):
     __tablename__ = 'modules'
@@ -23,7 +23,7 @@ class Module(Base):
     name = Column(Text, nullable=False)
     SSID = Column(Text, nullable=False, default="amFOSS_")
     seed = Column(Integer, nullable=False, default=1000)
-    seedRefreshInterval = Column(Interval, nullable=False)
+    seedRefreshInterval = Column(Integer, nullable=False)
     lastRefreshTime = Column(DateTime, nullable=False)
     isPaused = Column(Boolean, nullable=False, default=True)
 
@@ -34,7 +34,7 @@ class Log(Base):
     member = relationship('User', back_populates='logs')
     date = Column(DateTime, nullable=False)
     lastSeen = Column(DateTime, nullable=True)
-    duration = Column(Interval, nullable=True)
+    duration = Column(Integer, nullable=True)
     sessions = Column(JSON, nullable=True)
     modules = relationship('Module', secondary='log_modules', back_populates='logs')
 
