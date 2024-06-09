@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request, redirect, session as
 from model import Session, User
 import bcrypt
 import dummy_data as dData
+from attendance import generateSSID, verify_ssid
 
 app = Flask(__name__)
 app.secret_key = "b'6y[^\xb2*|\xf2\xccd\x9d\x04'" # Remove this later
@@ -99,12 +100,37 @@ def edit_profile():
             return render_template('dashboard.html', user=current_user, error=str(e))
         
         return redirect('/home')
-    
+
     return render_template('edit_profile.html', user=current_user)
 
 @app.route("/mark_attendance", methods=["POST"])
 def mark_attendance():
-    pass
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    ssid_list = data.get('list')
+    now = datetime.now()
+    # hmac_shared_key = 
+    # hmac_message =  data.get('hmac_message')
+    # hmac_verfied =  False 
+    authenticated = False 
+    ssid_verified = False 
+
+    session = Session()
+    try:
+        user = session.query(User).filter_by(user_name=username).first()
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            authenticated = True
+        ssid_verified = verify_ssid(ssid_list)
+        if authenticated and ssid_verified:
+            #update attendance here 
+            pass
+
+        
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
