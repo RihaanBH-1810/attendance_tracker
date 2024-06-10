@@ -152,6 +152,27 @@ def edit_profile():
 
     return render_template('dashboard.html', user=current_user)
 
+@app.route("/verify", methods=["POST"])
+def verify_credentials():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    shared_secret = data.get('shared_secret')
+
+    session = Session()
+    try:
+        user = session.query(User).filter_by(user_name=username).first()
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')) and user.shared_secret == shared_secret:
+            return jsonify({"status": "success", "message" : "Creds Verified"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+    except Exception as e:
+        print("Error occurred:", e)
+        session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        session.close()
+
 @app.route("/mark_attendance", methods=["POST"])
 def mark_attendance():
     data = request.json
