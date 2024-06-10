@@ -1,6 +1,6 @@
-#include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h> //use WiFi.h for esp32 
 #include <WiFiClient.h>
-#include <ESP8266WebServer.h>
+#include <ESP8266WebServer.h> // use webserver.h for esp32 
 #include <time.h>
 #include <Ticker.h>
 #include <EEPROM.h>
@@ -8,11 +8,14 @@
 #define ull unsigned long long
 
 Ticker blinker;
-ESP8266WebServer server(80);
+ESP8266WebServer server(80); 
 
-const char* password
+const char* password;
 char ssid[100];
-ull a, c, m, addr;
+unsigned long long addr;
+unsigned long long a = 656550107; // change the constants for production
+unsigned long long c = 8849371;
+unsigned long long m = 9850349;
 
 ull change_seed(ull seed) {
   seed = (seed % m) * (a % m);
@@ -37,7 +40,7 @@ void changeWifi() {
   ull seed = get_seed();
   seed = change_seed(seed);
   write_seed(seed);  
-  sprintf(ssid, "amFOSS_%d", seed);
+  sprintf(ssid, "amFOSS_%u", seed);
   WiFi.softAP(ssid, password);
   Serial.println(ssid);
 }
@@ -48,7 +51,7 @@ void setup() {
   EEPROM.begin(512);
   Serial.println("Initial Setup");
   ull seed = get_seed();
-  sprintf(ssid, "amFOSS_%d", seed);
+  sprintf(ssid, "amFOSS_%u", seed);
   WiFi.softAP(ssid, password);
   Serial.println(ssid);
   Serial.println(WiFi.softAPIP());
