@@ -1,31 +1,37 @@
--- Create the database
+-- Create the database for mariaDB
 CREATE DATABASE IF NOT EXISTS my_database;
 
 -- Select the database
 USE my_database;
 
 -- Create the users table
+
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_name TEXT NOT NULL,
     password TEXT NOT NULL,
     current_day_labtime INT NOT NULL DEFAULT 0,
-    labtime_data JSON NOT NULL DEFAULT '{}',
+    labtime_data JSON NOT NULL,
     name TEXT,
     rollNo TEXT,
     shared_secret TEXT
 );
 
+
 -- Create the modules table
+
+
 CREATE TABLE modules (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name TEXT NOT NULL,
-    SSID TEXT NOT NULL DEFAULT 'amFOSS_',
+    SSID TEXT NOT NULL,
     seed INT NOT NULL DEFAULT 1000,
     seedRefreshInterval INT NOT NULL,  -- Store interval in minutes
     lastRefreshTime TIMESTAMP NOT NULL,
     isPaused BOOLEAN NOT NULL DEFAULT TRUE
 );
+
 
 -- Create the logs table
 CREATE TABLE logs (
@@ -38,6 +44,9 @@ CREATE TABLE logs (
     FOREIGN KEY (member_id) REFERENCES users(id)
 );
 
+
+
+
 -- Create the log_modules table
 CREATE TABLE log_modules (
     log_id INT NOT NULL,
@@ -46,6 +55,7 @@ CREATE TABLE log_modules (
     FOREIGN KEY (log_id) REFERENCES logs(id),
     FOREIGN KEY (module_id) REFERENCES modules(id)
 );
+
 
 -- Create a user with appropriate privileges
 CREATE USER IF NOT EXISTS 'my_user'@'localhost' IDENTIFIED BY 'my_password';
