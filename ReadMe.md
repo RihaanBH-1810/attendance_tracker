@@ -2,16 +2,16 @@
 
 <h3>Done :</h3>
 
-*Login*
+__Login__
 <img src="/screensshots/login.png">
 
-*Registration*
+__Registration__
 <img src="/screensshots/register.png">
 
-*Profile Page*
+__Profile Page__
 <img src="/screensshots/profile.png">
 
-*Attendance verification Logic*
+__Attendance verification Logic__ : authentication: done, ssid verification : done, hmac verification: done
 
 <h3>Issues in : </h3>
 
