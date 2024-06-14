@@ -15,11 +15,11 @@ __Attendance verification Logic__ : authentication: done, ssid verification : do
 
 <h3>Issues in : </h3>
 
-*Attendance calculation logic*
+~*Attendance calculation logic*~
 
 <a href="https://gitlab.com/rihaan1810/attendance-tracker/-/issues/1"> Issue 1 </a>
 
-*Attendance table display logic*
+~*Attendance table display logic*~
 
 <a href="https://gitlab.com/rihaan1810/attendance-tracker/-/issues/2"> Issue 2 </a>
 
