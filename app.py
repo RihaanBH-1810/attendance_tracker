@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from config import config
 from sqlalchemy.exc import SQLAlchemyError
 import pytz
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.secret_key = "b'6y[^\xb2*|\xf2\xccd\x9d\x04'"
@@ -20,42 +21,79 @@ def index():
 def home():
     if 'username' in flask_session:
         session = Session()
-        current_user = session.query(User).filter_by(user_name=flask_session['username']).first()
-        
+        dates = {}
+        unique_dates = session.query(func.date(Log.timestamp)).distinct().all()
 
-        print(f"Current User: {current_user}")
+        for date in unique_dates:
+            records = []
+            date = date[0]
+            total_users = session.query(User).count()
+            for i in range(1, total_users+1):
+                user = session.query(User).filter_by(id=i).first()
+                if user:
+                    record_user = session.query(Log).filter_by(member_id=user.id).all()
+                    min_time = datetime.max
+                    max_time = datetime.min
+                    for record in record_user:
+                        if record.timestamp.date() == date:
+                            login_time = record.timestamp
+                            if login_time < min_time:
+                                min_time = login_time
 
-        attendance_records = session.query(Log).filter_by(member_id=current_user.id).all()
-        
-
-        print(f"Attendance Records: {attendance_records}")
-
-        records = []
-        for record in attendance_records:
-            print(f"Record: {record}, Sessions: {record.sessions}")
-
-            if isinstance(record.sessions, list):
-                for session_data in record.sessions:
-                    if isinstance(session_data, dict) and 'startTime' in session_data and 'endTime' in session_data:
-                        records.append({
-                            'name': current_user.name,
-                            'rollNo': current_user.rollNo,
-                            'date': record.date.strftime('%Y-%m-%d'),
-                            'login_time': session_data.get('startTime'),
-                            'logout_time': session_data.get('endTime')
-                        })
-                    else:
-                        print(f"Invalid session data: {session_data}")
-            else:
-                print(f"Invalid sessions type: {type(record.sessions)}")
-
-
-        print(f"Processed Records: {records}")
+                            logout_time = record.timestamp
+                            if logout_time > max_time:
+                                max_time = logout_time
+                    records.append({
+                        'name': user.name,
+                        'rollNo': user.rollNo,
+                        'login_time': min_time.strftime('%I:%M:%S %p') if min_time != datetime.max else '',
+                        'logout_time': max_time.strftime('%I:%M:%S %p') if max_time != datetime.min else '',
+                    })
+            dates[date.strftime('%d/%m/%Y')] = records
 
         session.close()
-        return render_template('home.html', username=flask_session['username'], records=records)
+        return render_template('home.html', username=flask_session['username'], dates=dates)
+    
     return redirect('/login')
 
+@app.route("/current_day")
+def current_day_json():
+    session = Session()
+    result = []
+    try:
+        total_users = session.query(User).count()
+        for i in range(1, total_users+1):
+            user = session.query(User).filter_by(id=i).first()
+            if user:
+                record_user = session.query(Log).filter_by(member_id=user.id).all()
+                current_date = datetime.now().date()
+                min_time = datetime.max
+                max_time = datetime.min
+                for record in record_user:
+                    if record.timestamp.date() == current_date:
+                        login_time = record.timestamp
+                        if login_time < min_time:
+                            min_time = login_time
+
+                        logout_time = record.timestamp
+                        if logout_time > max_time:
+                            max_time = logout_time
+
+                result.append({
+                    'name': user.name,
+                    'rollNo': user.rollNo,
+                    'date': current_date.strftime('%d/%m/%Y'),
+                    'login_time': min_time.strftime('%I:%M %p') if min_time != datetime.max else '',
+                    'logout_time': max_time.strftime('%I:%M %p') if max_time != datetime.min else '',
+                })
+        return jsonify(result)
+    
+    except Exception as e:
+        print("Error fetching current day data:", e)
+        return jsonify({'error': 'An error occurred while fetching data'}), 500
+    
+    finally:
+        session.close()
 
 @app.route("/dashboard")
 def dashboard():
@@ -100,8 +138,6 @@ def register():
         new_user = User(
             user_name=username,
             password=hashed_password,
-            current_day_labtime=0,
-            labtime_data=json.dumps({}),
             name=name,
             rollNo=rollNo,
             shared_secret=shared_secret
@@ -191,38 +227,32 @@ def mark_attendance():
         user = session.query(User).filter_by(user_name=username).first()
         if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             authenticated = True
+        
+        if not authenticated:
+            return jsonify({"status": "error", "message": "Authentication failed"}), 401
+
+        # Verify SSID
         ssid_verified = ssid_utils.verify_ssid(ssid_list)
+        if not ssid_verified:
+            return jsonify({"status": "error", "message": "SSID verification failed"}), 401
 
-        if authenticated and ssid_verified and hmac_utils.verify_hmac(user.shared_secret, message, received_hmac):
-            log = session.query(Log).filter(Log.member_id == user.id, Log.date == now.date()).first()
+        # Verify HMAC
+        if not hmac_utils.verify_hmac(user.shared_secret, message, received_hmac):
+            return jsonify({"status": "error", "message": "HMAC verification failed"}), 401
 
-        if not log:
-            log = Log(member_id=user.id, date=now, lastSeen=now, duration=0, sessions=[])
-            session.add(log)
-            user.current_day_labtime = 0
+        # Check if log record exists for today
+        log = session.query(Log).filter(Log.member_id == user.id).first()
 
-            labtime_data = json.loads(user.labtime_data)
-            labtime_data[str(now.date())] = []
-            user.labtime_data = json.dumps(labtime_data)
 
-            session.commit()
+        log = Log(member_id=user.id, timestamp=now)
+        session.add(log)
 
-        if log.lastSeen.tzinfo is None:
-            log.lastSeen = to_tz.localize(log.lastSeen)
-            time_change = now - log.lastSeen
-            log.duration += time_change.total_seconds()
-            user.current_day_labtime += time_change.total_seconds()
-            log.lastSeen = now
-            labtime_data = json.loads(user.labtime_data)
-            sessions = labtime_data[str(now.date())]
-            sessions.append({'startTime': (now - time_change).isoformat(), 'endTime': now.isoformat()})
-            labtime_data[str(now.date())] = sessions
-            user.labtime_data = json.dumps(labtime_data)
-            session.commit()
-            return jsonify({"status": "success"}), 200
+        session.commit()
 
-        else:
-            return jsonify({"status": "error"}), 401
+        session.commit()
+        
+        return jsonify({"status": "success"}), 200
+    
     except Exception as e:
         print("Error occurred:", e)
         session.rollback()

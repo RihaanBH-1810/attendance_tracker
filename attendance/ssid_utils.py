@@ -20,6 +20,7 @@ def update_futureSSID(futureSSID):
         json.dump(futureSSID, file)
 
 def refreshSSID(module):
+    session = Session()
     now = datetime.now().astimezone(to_tz)
     lastTime = module.lastRefreshTime.astimezone(to_tz)
     if module.isPaused is False and now - lastTime >= module.seedRefreshInterval:

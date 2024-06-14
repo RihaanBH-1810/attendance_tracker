@@ -117,14 +117,19 @@
                 </tr>
             </thead>
             <tbody>
-                {% for record in records %}
-                <tr>
-                    <td>{{ record.name }}</td>
-                    <td>{{ record.rollNo }}</td>
-                    <td>{{ record.date }}</td>
-                    <td>{{ record.login_time }}</td>
-                    <td>{{ record.logout_time }}</td>
-                </tr>
+                {% for date, users in dates.items() %}
+                    <tr>
+                        <th colspan="5" style="text-align: center;background-color:#101317;">{{ date }}</th>
+                    </tr>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.rollNo }}</td>
+                            <td>{{ date }}</td>
+                            <td>{{ user.login_time }}</td>
+                            <td>{{ user.logout_time }}</td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
