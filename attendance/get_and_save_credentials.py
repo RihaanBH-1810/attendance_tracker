@@ -14,7 +14,7 @@ def get_and_save_credentials():
     
     r = requests.post(url, json=data)
     response_json = r.json()
-    print(response_json)
+    # print(response_json)
     if response_json['message'] == 'Invalid credentials':
         print("Try again, please enter valid credentials")
         get_and_save_credentials()
