@@ -2,6 +2,11 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+a = int(os.getenv("A"))
+c = int(os.getenv("B"))
+m = int(os.getenv("C"))
+seed = int(os.getenv("SEED"))
+
 curr_env = os.environ['MODE'] if 'MODE' in os.environ else 'development'
 DB_URL = "LabTrack.mysql.pythonanywhere-services.com" if curr_env == 'production' else "127.0.0.1"
 DB_USERNAME = os.getenv('DB_USERNAME') if curr_env == 'production' else "my_user"
@@ -11,5 +16,9 @@ TIMEZONE = os.getenv('TIMEZONE')
 
 config = {
     'SQL_URI':   f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_URL}:3306/{DB_NAME}',
-    'TIMEZONE': TIMEZONE
+    'TIMEZONE': TIMEZONE,
+    'A': a,
+    'C': c,
+    'M': m,
+    'SEED': seed
 }

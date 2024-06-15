@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pytz import timezone
 from model import Session, Module, Log, User
 from .generator_script import generatorScript
+from ..config import config
 
 to_tz = timezone('UTC')  
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,7 +11,7 @@ data_dir = os.path.join(script_dir, 'data')
 futureSSID_path = os.path.join(data_dir, 'futureSSID.json')
 
 def update_futureSSID(futureSSID):
-    seed = 1000
+    seed = config['SEED']
     if len(futureSSID) > 2:
         seed = futureSSID[-1]
     while len(futureSSID) < 10000:

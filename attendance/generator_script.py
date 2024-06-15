@@ -1,6 +1,10 @@
-a = 656550107
-c = 8849371
-m = 9850349
+from ..config import config
+
+a = config['A']
+c = config['C']
+m = config['M']
+
+
 
 def generatorScript(seed):
     seed = (seed % m) * (a % m)
