@@ -38,7 +38,7 @@ sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssi
 
 # Activate the service
 if [[ "$machine" != "Mac" ]]; then
-    sudo cp -r attendance-tracker/system/. "$labtrac_service_path"/.
+    sudo cp -r attendance_tracker/system/. "$labtrac_service_path"/.
     sudo systemctl enable labtrac.timer
     sudo systemctl start labtrac.service
 fi
@@ -48,7 +48,7 @@ if [[ "$machine" = "Mac" ]]; then
     sudo ./macinstall.sh $_uname
 fi
 # delete downloaded files
-rm -rf attendance-tracker
+rm -rf attendance_tracker
 rm install.sh
 
 # fetch creds from user and store them
