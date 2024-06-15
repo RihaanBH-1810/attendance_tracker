@@ -13,9 +13,9 @@ ESP8266WebServer server(80);
 const char* password;
 char ssid[100];
 unsigned long long addr;
-unsigned long long a = 656550107; // change the constants for production
-unsigned long long c = 8849371;
-unsigned long long m = 9850349;
+unsigned long long a = 0; // change the constants for production
+unsigned long long c = 0;
+unsigned long long m = 0;
 
 ull change_seed(ull seed) {
   seed = (seed % m) * (a % m);
@@ -63,7 +63,7 @@ void setup() {
 void reset_EEPROM(){
   Serial.println("RESETTING");
   blinker.detach();
-  EEPROM.put(addr, 1000);
+  EEPROM.put(addr, 0);//replace zero with seed
   String response = "<!DOCTYPE html>\n";
   response += "<html>\n";
   response += "<head>\n";
