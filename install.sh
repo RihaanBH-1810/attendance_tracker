@@ -20,7 +20,8 @@ fi
 
 # clone the repo
 rm -rf attendance-tracker
-git clone https://github.com/amfoss/attendance-tracker.git
+git clone --single-branch --branch attendance-tracker-script https://github.com/RihaanBH-1810/attendance_tracker.git
+ 
 
 # create attendance folder
 sudo mkdir -p "$attendance_folder_path"
