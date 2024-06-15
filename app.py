@@ -32,22 +32,18 @@ def home():
                 user = session.query(User).filter_by(id=i).first()
                 if user:
                     record_user = session.query(Log).filter_by(member_id=user.id).all()
-                    min_time = datetime.max
-                    max_time = datetime.min
+                    time_list = []
                     for record in record_user:
                         if record.timestamp.date() == date:
-                            login_time = record.timestamp
-                            if login_time < min_time:
-                                min_time = login_time
-
-                            logout_time = record.timestamp
-                            if logout_time > max_time:
-                                max_time = logout_time
+                            time_list.append(record.timestamp)
+                    
+                    min_time = min(time_list) if time_list != [] else 0
+                    max_time = max(time_list) if time_list != [] else 0
                     records.append({
                         'name': user.name,
                         'rollNo': user.rollNo,
-                        'login_time': min_time.strftime('%I:%M:%S %p') if min_time != datetime.max else '',
-                        'logout_time': max_time.strftime('%I:%M:%S %p') if max_time != datetime.min else '',
+                        'login_time': min_time.strftime('%I:%M:%S %p') if min_time != 0 else 'Absent',
+                        'logout_time': max_time.strftime('%I:%M:%S %p') if max_time != 0 else 'Absent',
                     })
             dates[date.strftime('%d/%m/%Y')] = records
 
@@ -67,24 +63,19 @@ def current_day_json():
             if user:
                 record_user = session.query(Log).filter_by(member_id=user.id).all()
                 current_date = datetime.now().date()
-                min_time = datetime.max
-                max_time = datetime.min
+                time_list = []
                 for record in record_user:
                     if record.timestamp.date() == current_date:
-                        login_time = record.timestamp
-                        if login_time < min_time:
-                            min_time = login_time
-
-                        logout_time = record.timestamp
-                        if logout_time > max_time:
-                            max_time = logout_time
-
+                        time_list.append(record.timestamp)
+                
+                min_time = min(time_list) if time_list != [] else 0
+                max_time = max(time_list) if time_list != [] else 0
                 result.append({
                     'name': user.name,
                     'rollNo': user.rollNo,
                     'date': current_date.strftime('%d/%m/%Y'),
-                    'login_time': min_time.strftime('%I:%M %p') if min_time != datetime.max else '',
-                    'logout_time': max_time.strftime('%I:%M %p') if max_time != datetime.min else '',
+                    'login_time': min_time.strftime('%I:%M %p') if min_time != 0 else 'Absent',
+                    'logout_time': max_time.strftime('%I:%M %p') if max_time != 0 else 'Absent',
                 })
         return jsonify(result)
     
