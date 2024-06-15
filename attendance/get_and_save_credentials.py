@@ -3,7 +3,7 @@ import json
 import requests
 
 def get_and_save_credentials():
-    print("Enter your amFOSS CMS Username and Password.")
+    print("Enter your amFOSS LABTRACK details.")
     username = input("Username: ")
     password = getpass.getpass("Password: ")
     shared_secret = input("Shared Secret: ")
