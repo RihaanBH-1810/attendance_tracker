@@ -75,7 +75,7 @@ def current_day_json():
                     'rollNo': user.rollNo,
                     'date': current_date.strftime('%d/%m/%Y'),
                     'login_time': min_time.strftime('%I:%M %p') if min_time != 0 else 'Absent',
-                    'logout_time': max_time.strftime('%I:%M %p') if max_time != 0 else 'Absent',
+                    'last_seen': max_time.strftime('%I:%M %p') if max_time != 0 else 'Absent',
                 })
         return jsonify(result)
     
