@@ -9,7 +9,7 @@ def get_and_save_credentials():
     shared_secret = input("Shared Secret: ")
     data = {"username": username, "password": password, 'shared_secret' : shared_secret}
     variables = json.dumps(data)
-    url = 'http://localhost:5000/verify' #for testing purpose
+    url = 'http://labtrack.pythonanywhere.com/verify' #for testing purpose
     
     
     r = requests.post(url, json=data)

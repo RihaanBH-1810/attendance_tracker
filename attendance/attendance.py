@@ -78,7 +78,7 @@ def mark_attendance(wifi_ssid_list, credentials):
         'message': message,
         'hmac': hmac_message
     }
-    url = 'http://localhost:5000/mark_attendance'
+    url = 'http://labtrack.pythonanywhere.com/mark_attendance'
     
     r = requests.post(url, json=data)
     print(r.content)
