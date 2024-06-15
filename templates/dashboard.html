@@ -81,6 +81,9 @@
         .imgProfile {
             border-radius: 50%;
             margin: 10px;
+            height: 256px;
+            width: 256px;
+            border: 1px solid #2E333A;
         }
         .editDetailsBox {
             grid-column: 2;
@@ -125,6 +128,9 @@
         }
 
         .shared-secret {
+            resize: none;
+            border: none;
+            color: white;
             margin: 10px;
             font-family: monospace;
             font-size: 14px;
@@ -133,15 +139,67 @@
             padding: 10px;
             border-radius: 5px;
             display: inline-block;
+            height: 17px;
+            width: 372px;
+            outline: none;
         }
         .separator {
             margin-top: 30px;
             margin-bottom: 30px;
             border: 1px solid #2E333A;
         }
+        .shared-secret-inline {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+        }
+        .copyBtn {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #20252D;
+            font-size: 14px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            height: 37px;
+        }
+        .copyBtn:hover {
+            background-color: #282E36;
+        }  
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #282E36;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+        }
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
     </style>
 {% endblock %}
 {% block main %}
+    <p id="snackbar">Secret copied to clipboard!</p>
     <div class="navBar">
         <div class="navBarPages">
             <a href="/home" class="navBarLinksA">
@@ -170,7 +228,10 @@
         <div class="editDetailsBox">
             <div class="shared-secret-box"> 
                 <h2>Shared Secret</h2>
-                <code class="shared-secret">{{ user.shared_secret }}</code>
+                <div class="shared-secret-inline">
+                    <textarea class="shared-secret" id="shared-secret" readonly>{{ user.shared_secret }}</textarea>
+                    <button class="copyBtn" onclick="copySecret()">Copy</button>
+                </div>
             </div>
             <hr class="separator">
             <h2>Edit Profile</h2>
@@ -186,4 +247,19 @@
             </form>
         </div>  
     </div>
+    <script>
+        function showSnackbar() {
+            var snackbar = document.getElementById("snackbar");
+            snackbar.className = "show";
+            setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 1500);
+        }
+        function copySecret() {
+            let sharedSecret = document.getElementById("shared-secret");
+            let copyStatus = document.getElementById("copyStatus");
+            sharedSecret.select();
+            document.execCommand("copy");
+            sharedSecret.blur();
+            showSnackbar();
+        }
+    </script>
 {% endblock %}

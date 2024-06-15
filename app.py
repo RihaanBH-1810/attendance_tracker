@@ -222,18 +222,14 @@ def mark_attendance():
         if not authenticated:
             return jsonify({"status": "error", "message": "Authentication failed"}), 401
 
-        # Verify SSID
         ssid_verified = ssid_utils.verify_ssid(ssid_list)
         if not ssid_verified:
             return jsonify({"status": "error", "message": "SSID verification failed"}), 401
 
-        # Verify HMAC
         if not hmac_utils.verify_hmac(user.shared_secret, message, received_hmac):
             return jsonify({"status": "error", "message": "HMAC verification failed"}), 401
 
-        # Check if log record exists for today
         log = session.query(Log).filter(Log.member_id == user.id).first()
-
 
         log = Log(member_id=user.id, timestamp=now)
         session.add(log)
