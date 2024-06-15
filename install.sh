@@ -32,7 +32,7 @@ if [[ "$machine" != "Mac" ]]; then
     sudo rm -f "$labtrac_service_path"/labtrac.timer
 fi
 
-sudo cp -r attendance-tracker/attendance/. "$attendance_folder_path"/.
+sudo cp -r attendance_tracker/attendance/. "$attendance_folder_path"/.
 
 sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssid_names.sh
 
