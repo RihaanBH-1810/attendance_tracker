@@ -9,13 +9,13 @@ def get_and_save_credentials():
     shared_secret = input("Shared Secret: ")
     data = {"username": username, "password": password, 'shared_secret' : shared_secret}
     variables = json.dumps(data)
-    url = 'http://labtrack.pythonanywhere.com/verify' #for testing purpose
+    url = 'http://labtrack.pythonanywhere.com/verify' 
     
     
     r = requests.post(url, json=data)
     response_json = r.json()
     # print(response_json)
-    if response_json['message'] == 'Invalid credentials':
+    if response_json['message'] == 'Invalid credentials' or response_json['status'] == 'error':
         print("Try again, please enter valid credentials")
         get_and_save_credentials()
         
