@@ -2,3 +2,4 @@
 .idea/
 *.json
 *.code-workspace
+.env
