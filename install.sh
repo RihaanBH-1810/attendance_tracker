@@ -36,6 +36,7 @@ sudo cp -r attendance_tracker/attendance/. "$attendance_folder_path"/.
 
 sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssid_names.sh
 
+sudo python3 "$attendance_folder_path"/get_and_save_credentials.py
 # Activate the service
 if [[ "$machine" != "Mac" ]]; then
     sudo cp -r attendance_tracker/system/. "$labtrac_service_path"/.
@@ -50,8 +51,3 @@ fi
 # delete downloaded files
 rm -rf attendance_tracker
 rm install.sh
-
-# fetch creds from user and store them
-cd "$attendance_folder_path"
-sudo python3 get_and_save_credentials.py
-cd ~
