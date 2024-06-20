@@ -21,7 +21,7 @@ def get_and_save_credentials():
         
     else:
         # Saves username and password
-        with open('.credentials', 'w') as file:
+        with open('/opt/attendance/.credentials', 'w') as file:
             json.dump(data, file)
             print("Successfully saved, please run this script whenever you change your credentials.")
 
