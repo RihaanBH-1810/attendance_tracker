@@ -54,8 +54,9 @@ if [[ "$machine" != "Mac" ]]; then
 fi
 
 if [[ "$machine" = "Mac" ]]; then
+    cd attendance-tracker
     sudo chmod u+x macinstall.sh
-    sudo ./macinstall.sh $_uname
+    sudo ./macinstall.sh $_uname $python_path
 fi
 # delete downloaded files
 rm -rf attendance_tracker
