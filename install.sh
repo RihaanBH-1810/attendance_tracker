@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
- cd ~ 
- 
+
 unameOut="$(uname -s)"
 _uname="$1"
 python_path="$2"
