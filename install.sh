@@ -18,6 +18,13 @@ else
     readonly labtrac_service_path="/etc/systemd/system"
 fi
 
+
+source /etc/os-release
+
+if [ "$ID" = "arch" ]; then
+    sudo pacman -Sy python-requests
+fi
+
 # clone the repo
 rm -rf attendance-tracker
 git clone --single-branch --branch attendance-tracker-script https://github.com/RihaanBH-1810/attendance_tracker.git
