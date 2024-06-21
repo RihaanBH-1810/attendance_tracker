@@ -1,5 +1,6 @@
 #!/bin/bash
 _user="$1"
+python_path="$2"
 _uid="$(id -u $_user)"
 PLISTFILE="/Library/LaunchDaemons/amfoss.attendancetracker.plist"
 LABEL="amfoss.attendancetracker"
@@ -14,7 +15,7 @@ sudo cat > $PLISTFILE <<EOF
     <key>ProgramArguments</key>
     <array>
         <string>/Users/$_user/.attendance/config</string>
-        <string>$_user</string>
+        <string>$_user $python_path</string>
     </array>
     <key>StartInterval</key>
     <integer>60</integer>
