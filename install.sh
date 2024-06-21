@@ -29,7 +29,7 @@ if [ "$ID" = "arch" ]; then
 fi
 
 # clone the repo
-rm -rf attendance-tracker
+sudo rm -rf attendance-tracker
 git clone --single-branch --branch attendance-tracker-script-fix https://github.com/RihaanBH-1810/attendance_tracker.git
  
 
