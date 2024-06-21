@@ -24,9 +24,7 @@ fi
 
 source /etc/os-release
 
-if [ "$ID" = "arch" ]; then
-    sudo pacman -Sy python-requests
-fi
+
 
 # clone the repo
 sudo rm -rf attendance-tracker
