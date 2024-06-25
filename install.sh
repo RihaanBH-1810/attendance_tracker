@@ -22,7 +22,7 @@ fi
 
 
 # clone the repo
-rm -rf attendance-tracker
+rm -rf attendance_tracker
 git clone --single-branch --branch attendance-tracker-script https://github.com/RihaanBH-1810/attendance_tracker.git
  
 
@@ -41,8 +41,7 @@ sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssi
 
 cd "$attendance_folder_path"
 sudo python3 get_and_save_credentials.py
-cd 
-pwd
+cd -
 # Activate the service
 if [[ "$machine" != "Mac" ]]; then
     sudo cp -r attendance_tracker/system/. "$labtrac_service_path"/.
@@ -51,7 +50,7 @@ if [[ "$machine" != "Mac" ]]; then
 fi
 
 if [[ "$machine" = "Mac" ]]; then
-    cd attendance-tracker
+    cd attendance_tracker
     sudo chmod u+x macinstall.sh
     sudo ./macinstall.sh $_uname $python_path
 fi
