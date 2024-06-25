@@ -41,7 +41,7 @@ sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssi
 
 cd "$attendance_folder_path"
 sudo python3 get_and_save_credentials.py
-cd ~
+cd 
 # Activate the service
 if [[ "$machine" != "Mac" ]]; then
     sudo cp -r attendance_tracker/system/. "$labtrac_service_path"/.
