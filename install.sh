@@ -22,7 +22,6 @@ else
 fi
 
 
-source /etc/os-release
 
 
 
