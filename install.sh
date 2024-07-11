@@ -26,7 +26,7 @@ fi
 
 
 # clone the repo
-sudo rm -rf attendance-tracker
+sudo rm -rf attendance_tracker
 git clone --single-branch --branch attendance-tracker-script-fix https://github.com/RihaanBH-1810/attendance_tracker.git
  
 
@@ -39,7 +39,7 @@ if [[ "$machine" != "Mac" ]]; then
     sudo rm -f "$labtrac_service_path"/labtrac.timer
 fi
 
-sudo cp -r attendance-tracker/attendance/. "$attendance_folder_path"/.
+sudo cp -r attendance_tracker/attendance/. "$attendance_folder_path"/.
 
 sudo chmod +x "$attendance_folder_path"/config "$attendance_folder_path"/get_ssid_names.sh
 
@@ -51,17 +51,17 @@ cd ~
 
 # Activate the service
 if [[ "$machine" != "Mac" ]]; then
-    sudo cp -r attendance-tracker/system/. "$labtrac_service_path"/.
+    sudo cp -r attendance_tracker/system/. "$labtrac_service_path"/.
     sudo systemctl enable labtrac.timer
     sudo systemctl start labtrac.service
 fi
 
 if [[ "$machine" = "Mac" ]]; then
-    cd attendance-tracker
+    cd attendance_tracker
     sudo chmod u+x macinstall.sh
     sudo ./macinstall.sh $_uname $python_path
 fi
 # delete downloaded files
-rm -rf attendance-tracker
+rm -rf attendance_tracker
 rm install.sh
 
