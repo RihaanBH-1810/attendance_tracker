@@ -26,5 +26,8 @@ sudo cat > $PLISTFILE <<EOF
 </dict>
 </plist>
 EOF
+
+sudo chmod 644 /Library/LaunchDaemons/amfoss.attendancetracker.plist
+sudo chown root:wheel /Library/LaunchDaemons/amfoss.attendancetracker.plist
 sudo launchctl load /Library/LaunchDaemons/$LABEL.plist
 sudo launchctl start $LABEL
